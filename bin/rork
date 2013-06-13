@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/player'
+
+@short_commands = { "n" => "move north", "s" => "move south", "e" => "move east", "w" => "move west", "suicide" => "commit seppuku" }
+def get_command
+	print "> "
+	command = gets.chomp
+
+	@short_commands.fetch(command, command)
+end
+
+player = Player.new
+
+puts "You find yourself in a dark dungeon."
+puts "The walls are wet and slimy."
+puts "To cap it all, you have the world's most hideous hangover.\n"
+
+puts "Type 'quit' to quit."
+
+puts "What is your name, stranger?"
+player.name = get_command
+
+puts "Hello, #{player.name}"
+
+loop do
+	exit if player.dead
+
+	command = get_command
+
+	exit if command == "quit"
+
+	method, args = command.split(' ')
+
+	if player.respond_to? method
+		puts player.send method, args
+	else
+		puts "Make some sense man! I don't know what #{command} means."
+	end
+end
